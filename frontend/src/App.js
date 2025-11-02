@@ -18,7 +18,7 @@ export default function App() {
         </Routes>
 
         <footer className="text-center text-gray-500 py-6 text-sm">
-          Criado por Guilherme Silveira © 2025
+          © 2025 Guilherme F.
         </footer>
       </div>
     </Router>
