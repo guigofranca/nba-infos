@@ -28,15 +28,14 @@ export default function PlayersTable() {
     const itemsPerPage = 40;
     const navigate = useNavigate();
 
-    // carregar dados
     useEffect(() => {
         fetch("/data/stats.json")
             .then((res) => res.json())
             .then((data) => setPlayers(data))
             .catch((err) => console.error("Erro ao carregar dados:", err));
     }, []);
-
-    // icones/fotos dos jogadores
+    
+    //imagens
     useEffect(() => {
         const fetchImages = async () => {
             try {
@@ -62,7 +61,7 @@ export default function PlayersTable() {
         fetchImages();
     }, []);
 
-    // filtro e ordenações
+    // Filtro + ordenação
     const filteredPlayers = useMemo(() => {
         let filtered = players;
 
@@ -85,7 +84,7 @@ export default function PlayersTable() {
         });
     }, [players, searchTerm, filterPos, filterTeam, sortKey, sortOrder]);
 
-    // páginas
+    // Paginação
     const totalPages = Math.ceil(filteredPlayers.length / itemsPerPage) || 1;
     const currentPlayers = filteredPlayers.slice(
         (currentPage - 1) * itemsPerPage,
@@ -116,7 +115,7 @@ export default function PlayersTable() {
         <div className="max-w-7xl mx-auto mt-10 bg-gray-800/70 p-4 md:p-6 rounded-2xl shadow-lg">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-orange-400 mb-3 sm:mb-0">
-                    Estatísticas NBA - Médias por jogo
+                    Estatísticas NBA - Todos os Jogadores
                 </h1>
                 <Link
                     to="/leaders"
@@ -174,76 +173,80 @@ export default function PlayersTable() {
 
             <div id="players-table-top" />
 
-            {/* Tabela principal */}
-            <table className="min-w-full text-sm md:text-base border-collapse">
-                <thead className="bg-gray-700 text-orange-300 uppercase text-xs sm:text-sm">
-                    <tr>
-                        <th className="px-4 py-3 text-left">Jogador</th>
-                        <th className="px-4 py-3 text-center">Time</th>
-                        <th className="px-4 py-3 text-center">Posição</th>
-                        {["PTS", "REB", "AST", "STL", "BLK", "TO", "MIN"].map((key) => (
-                            <th
-                                key={key}
-                                className="px-4 py-3 text-center cursor-pointer hover:text-orange-400 select-none"
-                                onClick={() => handleSort(key)}
-                                title={`Ordenar por ${key}`}
-                            >
-                                {key}
-                                {sortKey === key ? (sortOrder === "asc" ? " ▲" : " ▼") : ""}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentPlayers.length > 0 ? (
-                        currentPlayers.map((p, i) => {
-                            const img =
-                                playerImages[nameKey(p.NAME)] ||
-                                "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
 
-                            return (
-                                <tr
-                                    key={`${p.NAME}-${i}`}
-                                    onClick={() => navigate(`/player/${encodeURIComponent(p.NAME)}`)}
-                                    className={`border-b border-gray-700 hover:bg-gray-700/50 transition cursor-pointer ${
-                                        i % 2 === 0 ? "bg-gray-800" : "bg-gray-900"
-                                    }`}
-                                >
-                                    <td className="px-4 py-2 flex items-center gap-3">
-                                        <img
-                                            src={img}
-                                            alt={p.NAME}
-                                            className="w-8 h-8 rounded-full object-cover border border-gray-500"
-                                            onError={(e) => {
-                                                e.currentTarget.src =
-                                                    "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
-                                            }}
-                                        />
-                                        <span className="font-semibold text-orange-200 whitespace-nowrap">
-                                            {p.NAME}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-2 text-center">{p.TEAM}</td>
-                                    <td className="px-4 py-2 text-center">{p.POS}</td>
-                                    <td className="px-4 py-2 text-center text-green-400">{p.PTS}</td>
-                                    <td className="px-4 py-2 text-center text-blue-400">{p.REB}</td>
-                                    <td className="px-4 py-2 text-center text-purple-400">{p.AST}</td>
-                                    <td className="px-4 py-2 text-center">{p.STL}</td>
-                                    <td className="px-4 py-2 text-center">{p.BLK}</td>
-                                    <td className="px-4 py-2 text-center">{p.TO}</td>
-                                    <td className="px-4 py-2 text-center">{p.MIN}</td>
-                                </tr>
-                            );
-                        })
-                    ) : (
+            <div className="overflow-x-auto rounded-lg ring-1 ring-gray-700">
+                {/* Tabela principal */}
+                <table className="min-w-full text-sm md:text-base border-collapse">
+                    <thead className="bg-gray-700 text-orange-300 uppercase text-xs sm:text-sm">
                         <tr>
-                            <td colSpan="10" className="text-center py-6 text-gray-400">
-                                Nenhum jogador encontrado.
-                            </td>
+                            <th className="px-4 py-3 text-left">Jogador</th>
+                            <th className="px-4 py-3 text-center">Time</th>
+                            <th className="px-4 py-3 text-center">Posição</th>
+                            {["PTS", "REB", "AST", "STL", "BLK", "TO", "MIN"].map((key) => (
+                                <th
+                                    key={key}
+                                    className="px-4 py-3 text-center cursor-pointer hover:text-orange-400 select-none"
+                                    onClick={() => handleSort(key)}
+                                    title={`Ordenar por ${key}`}
+                                >
+                                    {key}
+                                    {sortKey === key ? (sortOrder === "asc" ? " ▲" : " ▼") : ""}
+                                </th>
+                            ))}
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {currentPlayers.length > 0 ? (
+                            currentPlayers.map((p, i) => {
+                                const img =
+                                    playerImages[nameKey(p.NAME)] ||
+                                    "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
+
+                                return (
+                                    <tr
+                                        key={`${p.NAME}-${i}`}
+                                        onClick={() => navigate(`/player/${encodeURIComponent(p.NAME)}`)}
+                                        className={`border-b border-gray-700 hover:bg-gray-700/50 transition cursor-pointer ${
+                                            i % 2 === 0 ? "bg-gray-800" : "bg-gray-900"
+                                        }`}
+                                    >
+                                        <td className="px-4 py-2 flex items-center gap-3">
+                                            <img
+                                                src={img}
+                                                alt={p.NAME}
+                                                className="w-8 h-8 rounded-full object-cover border border-gray-500"
+                                                onError={(e) => {
+                                                    e.currentTarget.src =
+                                                        "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
+                                                }}
+                                            />
+                                            <span className="font-semibold text-orange-200 whitespace-nowrap">
+                                                {p.NAME}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-2 text-center">{p.TEAM}</td>
+                                        <td className="px-4 py-2 text-center">{p.POS}</td>
+                                        <td className="px-4 py-2 text-center text-green-400">{p.PTS}</td>
+                                        <td className="px-4 py-2 text-center text-blue-400">{p.REB}</td>
+                                        <td className="px-4 py-2 text-center text-purple-400">{p.AST}</td>
+                                        <td className="px-4 py-2 text-center">{p.STL}</td>
+                                        <td className="px-4 py-2 text-center">{p.BLK}</td>
+                                        <td className="px-4 py-2 text-center">{p.TO}</td>
+                                        <td className="px-4 py-2 text-center">{p.MIN}</td>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <tr>
+                                <td colSpan="10" className="text-center py-6 text-gray-400">
+                                    Nenhum jogador encontrado.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
 
             {/* Paginação */}
             {totalPages > 1 && (
