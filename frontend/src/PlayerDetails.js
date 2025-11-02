@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -51,6 +51,7 @@ const TEAM_MAP = {
 };
 
 export default function PlayerDetails() {
+  const navigate = useNavigate();
   const { name } = useParams();
   const [player, setPlayer] = useState(null);
   const [playerImg, setPlayerImg] = useState(null);
@@ -152,9 +153,12 @@ export default function PlayerDetails() {
 
   return (
     <div className="max-w-3xl mx-auto mt-10 bg-gray-800/70 p-6 rounded-2xl shadow-lg">
-      <Link to="/" className="text-orange-400 hover:underline">
+      <button 
+        onClick={() => navigate(-1)} 
+        className="text-orange-400 hover:underline"
+      >
         ← Voltar
-      </Link>
+      </button>
 
       <div className="flex flex-col items-center mt-4">
         <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-orange-400 mb-4 bg-gray-900">
