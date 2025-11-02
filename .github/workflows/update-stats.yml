@@ -29,10 +29,10 @@ jobs:
       - name: 3. Instalar dependências
         run: |
           python -m pip install --upgrade pip
-          pip install -r python/requirements.txt
+          pip install -r scraper/requirements.txt
       
       - name: 4. Rodar o script de scraping (Salva JSON)
-        run: python python/stats.py # Script agora SÓ salva o arquivo
+        run: python scraper/scrape_stats.py # Script agora SÓ salva o arquivo
 
       # --- A ETAPA DE COMMIT E PUSH ---
       - name: 5. Fazer Commit e Push do JSON atualizado
