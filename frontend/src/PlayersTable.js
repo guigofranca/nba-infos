@@ -11,7 +11,6 @@ import {
     Legend,
 } from "chart.js";
 import { Link } from "react-router-dom";
-// MUDANÇA AQUI: Importando a função 'nameKey'
 import { nameKey } from "./utils";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -29,18 +28,15 @@ export default function PlayersTable() {
     const itemsPerPage = 40;
     const navigate = useNavigate();
 
-    // 📥 Carregar dados principais
+    // carregar dados
     useEffect(() => {
-        // MUDANÇA AQUI: Corrigido o caminho para /data/
         fetch("/data/stats.json")
             .then((res) => res.json())
             .then((data) => setPlayers(data))
             .catch((err) => console.error("Erro ao carregar dados:", err));
     }, []);
 
-    // MUDANÇA AQUI: Removida a função 'normalize' local
-    
-    // 🏀 Carregar imagens dos jogadores
+    // icones/fotos dos jogadores
     useEffect(() => {
         const fetchImages = async () => {
             try {
@@ -52,7 +48,6 @@ export default function PlayersTable() {
                 list.forEach((p) => {
                     const id = p.id || p.player_id;
                     const fullName = `${p.firstName || p.first_name} ${p.lastName || p.last_name}`;
-                    // MUDANÇA AQUI: Usando 'nameKey' para consistência
                     imgs[nameKey(fullName)] =
                         p.headshot_url ||
                         `https://cdn.nba.com/headshots/nba/latest/260x190/${id}.png`;
@@ -67,8 +62,7 @@ export default function PlayersTable() {
         fetchImages();
     }, []);
 
-    // ... (O resto do código, 'filteredPlayers', 'totalPages', etc., continua igual) ...
-    // 🔍 Filtro + ordenação
+    // filtro e ordenações
     const filteredPlayers = useMemo(() => {
         let filtered = players;
 
@@ -91,7 +85,7 @@ export default function PlayersTable() {
         });
     }, [players, searchTerm, filterPos, filterTeam, sortKey, sortOrder]);
 
-    // 📄 Paginação
+    // páginas
     const totalPages = Math.ceil(filteredPlayers.length / itemsPerPage) || 1;
     const currentPlayers = filteredPlayers.slice(
         (currentPage - 1) * itemsPerPage,
@@ -122,7 +116,7 @@ export default function PlayersTable() {
         <div className="max-w-7xl mx-auto mt-10 bg-gray-800/70 p-4 md:p-6 rounded-2xl shadow-lg">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-orange-400 mb-3 sm:mb-0">
-                    Estatísticas NBA - Todos os Jogadores
+                    Estatísticas NBA - Médias por jogo
                 </h1>
                 <Link
                     to="/leaders"
@@ -132,7 +126,7 @@ export default function PlayersTable() {
                 </Link>
             </div>
 
-            {/* 🔍 Filtros e busca */}
+            {/* Filtros e busca */}
             <div className="flex flex-col md:flex-row gap-3 justify-center items-center mb-6">
                 <input
                     type="text"
@@ -180,7 +174,7 @@ export default function PlayersTable() {
 
             <div id="players-table-top" />
 
-            {/* 🧾 Tabela principal */}
+            {/* Tabela principal */}
             <table className="min-w-full text-sm md:text-base border-collapse">
                 <thead className="bg-gray-700 text-orange-300 uppercase text-xs sm:text-sm">
                     <tr>
@@ -204,7 +198,6 @@ export default function PlayersTable() {
                     {currentPlayers.length > 0 ? (
                         currentPlayers.map((p, i) => {
                             const img =
-                                // MUDANÇA AQUI: Usando 'nameKey' para buscar a imagem
                                 playerImages[nameKey(p.NAME)] ||
                                 "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
 
@@ -252,7 +245,7 @@ export default function PlayersTable() {
                 </tbody>
             </table>
 
-            {/* 🔢 Paginação */}
+            {/* Paginação */}
             {totalPages > 1 && (
                 <div className="flex justify-center mt-6 flex-wrap gap-2">
                     <button
@@ -287,7 +280,7 @@ export default function PlayersTable() {
                 </div>
             )}
 
-            {/* ℹ️ Info */}
+            {/* Info */}
             <p className="text-center text-gray-400 text-sm mt-4">
                 Página {currentPage} de {totalPages} • Mostrando {currentPlayers.length} de{" "}
                 {filteredPlayers.length} jogadores

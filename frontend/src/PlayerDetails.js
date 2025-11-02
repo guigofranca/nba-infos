@@ -10,20 +10,44 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-// MUDANÇA AQUI: Importando a função 'nameKey' do nosso novo utils.js
 import { nameKey } from "./utils"; 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-// MUDANÇA AQUI: As funções auxiliares de nome foram removidas daqui
 
-// === Dicionário de times ===
+// times com seus respectivos nomes/abreviações e logos
 const TEAM_MAP = {
   ATL: { name: "Atlanta Hawks", logo: "https://cdn.nba.com/logos/nba/1610612737/primary/L/logo.svg" },
   BOS: { name: "Boston Celtics", logo: "https://cdn.nba.com/logos/nba/1610612738/primary/L/logo.svg" },
   BKN: { name: "Brooklyn Nets", logo: "https://cdn.nba.com/logos/nba/1610612751/primary/L/logo.svg" },
-  // ... (O resto do seu TEAM_MAP continua igual) ...
-  WSH: { name: "Washington Wizards", logo: "https://cdn.nba.com/logos/nba/1610612764/primary/L/logo.svg" },
+  CHA: { name: "Charlotte Hornets", logo: "https://cdn.nba.com/logos/nba/1610612766/primary/L/logo.svg" },
+  CHI: { name: "Chicago Bulls", logo: "https://cdn.nba.com/logos/nba/1610612741/primary/L/logo.svg" },
+  CLE: { name: "Cleveland Cavaliers", logo: "https://cdn.nba.com/logos/nba/1610612739/primary/L/logo.svg" },
+  DAL: { name: "Dallas Mavericks", logo: "https://cdn.nba.com/logos/nba/1610612742/primary/L/logo.svg" },
+  DEN: { name: "Denver Nuggets", logo: "https://cdn.nba.com/logos/nba/1610612743/primary/L/logo.svg" },
+  DET: { name: "Detroit Pistons", logo: "https://cdn.nba.com/logos/nba/1610612765/primary/L/logo.svg" },
+  GSW: { name: "Golden State Warriors", logo: "https://cdn.nba.com/logos/nba/1610612744/primary/L/logo.svg" },
+  HOU: { name: "Houston Rockets", logo: "https://cdn.nba.com/logos/nba/1610612745/primary/L/logo.svg" },
+  IND: { name: "Indiana Pacers", logo: "https://cdn.nba.com/logos/nba/1610612754/primary/L/logo.svg" },
+  LAC: { name: "LA Clippers", logo: "https://cdn.nba.com/logos/nba/1610612746/primary/L/logo.svg" },
+  LAL: { name: "Los Angeles Lakers", logo: "https://cdn.nba.com/logos/nba/1610612747/primary/L/logo.svg" },
+  MEM: { name: "Memphis Grizzlies", logo: "https://cdn.nba.com/logos/nba/1610612763/primary/L/logo.svg" },
+  MIA: { name: "Miami Heat", logo: "https://cdn.nba.com/logos/nba/1610612748/primary/L/logo.svg" },
+  MIL: { name: "Milwaukee Bucks", logo: "https://cdn.nba.com/logos/nba/1610612749/primary/L/logo.svg" },
+  MIN: { name: "Minnesota Timberwolves", logo: "https://cdn.nba.com/logos/nba/1610612750/primary/L/logo.svg" },
+  NOP: { name: "New Orleans Pelicans", logo: "https://cdn.nba.com/logos/nba/1610612740/primary/L/logo.svg" },
+  NYK: { name: "New York Knicks", logo: "https://cdn.nba.com/logos/nba/1610612752/primary/L/logo.svg" },
+  OKC: { name: "Oklahoma City Thunder", logo: "https://cdn.nba.com/logos/nba/1610612760/primary/L/logo.svg" },
+  ORL: { name: "Orlando Magic", logo: "https://cdn.nba.com/logos/nba/1610612753/primary/L/logo.svg" },
+  PHI: { name: "Philadelphia 76ers", logo: "https://cdn.nba.com/logos/nba/1610612755/primary/L/logo.svg" },
+  PHX: { name: "Phoenix Suns", logo: "https://cdn.nba.com/logos/nba/1610612756/primary/L/logo.svg" },
+  POR: { name: "Portland Trail Blazers", logo: "https://cdn.nba.com/logos/nba/1610612757/primary/L/logo.svg" },
+  SAC: { name: "Sacramento Kings", logo: "https://cdn.nba.com/logos/nba/1610612758/primary/L/logo.svg" },
+  SAS: { name: "San Antonio Spurs", logo: "https://cdn.nba.com/logos/nba/1610612759/primary/L/logo.svg" },
+  TOR: { name: "Toronto Raptors", logo: "https://cdn.nba.com/logos/nba/1610612761/primary/L/logo.svg" },
+  UTA: { name: "Utah Jazz", logo: "https://cdn.nba.com/logos/nba/1610612762/primary/L/logo.svg" },
+  WAS: { name: "Washington Wizards", logo: "https://cdn.nba.com/logos/nba/1610612764/primary/L/logo.svg" },
+  TOT: { name: "Múltiplos Times", logo: "https://cdn.nba.com/logos/nba/nba/primary/L/nba-logoman-word-white.svg" },
 };
 
 export default function PlayerDetails() {
@@ -60,7 +84,7 @@ export default function PlayerDetails() {
     run();
   }, [name]);
 
-  // === Buscar imagem do jogador ===
+  // imagem jogador
   useEffect(() => {
     if (!player) return;
 
@@ -104,8 +128,6 @@ export default function PlayerDetails() {
     getNBAImage();
   }, [player]);
 
-  // ... (O resto do seu código JSX continua exatamente igual) ...
-  // (return <div ... etc)
   if (error)
     return (
       <div className="text-center py-20 text-gray-400">
