@@ -44,7 +44,6 @@ export default function PlayersTable() {
     useEffect(() => {
         const fetchImages = async () => {
             try {
-                // MUDANÇA AQUI: Corrigido o caminho para /data/
                 const res = await fetch("/data/nba_players.json");
                 const data = await res.json();
                 const list = Array.isArray(data) ? data : data.players || [];

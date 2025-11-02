@@ -66,7 +66,7 @@ export default function PlayerDetails() {
 
     const getNBAImage = async () => {
       try {
-        // MUDANÇA AQUI: Corrigido o caminho para /data/
+
         const res = await fetch("/data/nba_players.json"); 
         const rawData = await res.json();
         const list = Array.isArray(rawData)
@@ -75,7 +75,7 @@ export default function PlayerDetails() {
           ? rawData.players
           : [];
 
-        const target = nameKey(player.NAME); // Usando a função importada
+        const target = nameKey(player.NAME);
         const match =
           list.find(
             (p) =>
