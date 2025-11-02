@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { Bar } from "react-chartjs-2";
+import { useEffect, useState, useMemo } from "react";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -10,21 +9,22 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
-import { Link } from "react-router-dom";
-import { nameKey } from "./utils";
+import { nameKey } from "./utils"; 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function PlayersTable() {
     const [players, setPlayers] = useState([]);
     const [playerImages, setPlayerImages] = useState({});
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filterPos, setFilterPos] = useState("");
-    const [filterTeam, setFilterTeam] = useState("");
-    const [sortKey, setSortKey] = useState("PTS");
-    const [sortOrder, setSortOrder] = useState("desc");
-    const [currentPage, setCurrentPage] = useState(1);
+    
+    const [searchParams, setSearchParams] = useSearchParams();
 
+    const currentPage = Number(searchParams.get("page")) || 1;
+    const searchTerm = searchParams.get("search") || "";
+    const filterPos = searchParams.get("pos") || "";
+    const filterTeam = searchParams.get("team") || "";
+    const sortKey = searchParams.get("sort") || "PTS";
+    const sortOrder = searchParams.get("order") || "desc";
     const itemsPerPage = 40;
     const navigate = useNavigate();
 
@@ -34,8 +34,7 @@ export default function PlayersTable() {
             .then((data) => setPlayers(data))
             .catch((err) => console.error("Erro ao carregar dados:", err));
     }, []);
-    
-    //imagens
+
     useEffect(() => {
         const fetchImages = async () => {
             try {
@@ -84,7 +83,7 @@ export default function PlayersTable() {
         });
     }, [players, searchTerm, filterPos, filterTeam, sortKey, sortOrder]);
 
-    // Paginação
+    
     const totalPages = Math.ceil(filteredPlayers.length / itemsPerPage) || 1;
     const currentPlayers = filteredPlayers.slice(
         (currentPage - 1) * itemsPerPage,
@@ -93,19 +92,47 @@ export default function PlayersTable() {
 
     const goToPage = (p) => {
         if (p >= 1 && p <= totalPages) {
-            setCurrentPage(p);
+            setSearchParams(prev => {
+                prev.set("page", p.toString());
+                return prev;
+            });
             const anchor = document.getElementById("players-table-top");
             anchor?.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     };
 
     const handleSort = (key) => {
-        if (sortKey === key) setSortOrder((o) => (o === "asc" ? "desc" : "asc"));
-        else {
-            setSortKey(key);
-            setSortOrder("desc");
-        }
-        setCurrentPage(1);
+        const newOrder = (key === sortKey && sortOrder === "desc") ? "asc" : "desc";
+        setSearchParams(prev => {
+            prev.set("sort", key);
+            prev.set("order", newOrder);
+            prev.set("page", "1");
+            return prev;
+        });
+    };
+
+    const handleSearch = (q) => {
+        setSearchParams(prev => {
+            prev.set("search", q);
+            prev.set("page", "1");
+            return prev;
+        });
+    };
+    
+    const handleFilterPos = (pos) => {
+        setSearchParams(prev => {
+            prev.set("pos", pos);
+            prev.set("page", "1");
+            return prev;
+        });
+    };
+
+    const handleFilterTeam = (team) => {
+        setSearchParams(prev => {
+            prev.set("team", team);
+            prev.set("page", "1");
+            return prev;
+        });
     };
 
     const uniquePositions = [...new Set(players.map((p) => p.POS).filter(Boolean))];
@@ -125,25 +152,18 @@ export default function PlayersTable() {
                 </Link>
             </div>
 
-            {/* Filtros e busca */}
             <div className="flex flex-col md:flex-row gap-3 justify-center items-center mb-6">
                 <input
                     type="text"
                     placeholder="Buscar por jogador ou time..."
                     className="w-full md:w-1/3 px-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
                     value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        setCurrentPage(1);
-                    }}
+                    onChange={(e) => handleSearch(e.target.value)}
                 />
 
                 <select
                     value={filterPos}
-                    onChange={(e) => {
-                        setFilterPos(e.target.value);
-                        setCurrentPage(1);
-                    }}
+                    onChange={(e) => handleFilterPos(e.target.value)}
                     className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-800 bg-gray-900 text-white border border-gray-600 focus:ring-2 focus:ring-orange-400"
                 >
                     <option value="">Todas as posições</option>
@@ -156,10 +176,7 @@ export default function PlayersTable() {
 
                 <select
                     value={filterTeam}
-                    onChange={(e) => {
-                        setFilterTeam(e.target.value);
-                        setCurrentPage(1);
-                    }}
+                    onChange={(e) => handleFilterTeam(e.target.value)}
                     className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-800 bg-gray-900 text-white border border-gray-600 focus:ring-2 focus:ring-orange-400"
                 >
                     <option value="">Todos os times</option>
@@ -173,9 +190,7 @@ export default function PlayersTable() {
 
             <div id="players-table-top" />
 
-
             <div className="overflow-x-auto rounded-lg ring-1 ring-gray-700">
-                {/* Tabela principal */}
                 <table className="min-w-full text-sm md:text-base border-collapse">
                     <thead className="bg-gray-700 text-orange-300 uppercase text-xs sm:text-sm">
                         <tr>
