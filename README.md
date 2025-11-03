@@ -2,6 +2,6 @@
 
 ### Tecnologias Utilizadas
 
-* **Frontend:** React, Tailwind CSS, Chart.js (gráficos)
+* **Frontend:** React, Tailwind, Chart.js (gráficos)
 * **Backend/Scraping:** Python, Pandas (para o scraping da tabela)
 * **Automação:** GitHub Actions
