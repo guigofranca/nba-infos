@@ -4,7 +4,7 @@ name: Atualização Diária - Estatísticas da NBA
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 6,20 * * *'
+    - cron: '0 15 * * *'
 
 jobs:
   update-stats:
